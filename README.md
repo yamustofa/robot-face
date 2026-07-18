@@ -1,14 +1,14 @@
-# RobotFace
+# Roopa
 
-![RobotFace Open Graph card](./public/og-image.png)
+![Roopa Open Graph card](./public/og-image.png)
 
 Your UI called. It wants a tiny robot friend.
 
-RobotFace is a playful, chunky-pixel React face that blinks, laughs, sulks, cries, gets mad, and generally behaves like it has better plans than your loading spinner. It includes an interactive playground plus a dedicated full-screen display mode where the face lives directly in the browser window.
+Roopa is a playful, chunky-pixel React robot face that blinks, laughs, sulks, cries, gets mad, and generally behaves like it has better plans than your loading spinner. It includes an interactive playground plus a dedicated full-screen display mode where the face lives directly in the browser window.
 
 ## What’s inside
 
-- Nine original moods plus the display-loop personalities: happy, excited, laughing, annoyed, crying, angry, sleepy, love, and more.
+- Nine original robot-face moods plus the display-loop personalities: happy, excited, laughing, annoyed, crying, angry, sleepy, love, and more.
 - Big pixel-segment SVG expressions with CRT bloom and scanlines.
 - Cursor-aware gaze, automatic blinking, talking and loading states.
 - A full-screen `/face` mode that cycles through a playful emotional loop.
@@ -21,7 +21,7 @@ npm install
 npm run dev
 ```
 
-Then open the local URL Vite prints. For the full-screen face, visit `/face` or click **Open display** in the app.
+Then open the local URL Vite prints. For the full-screen face, visit `/face` or click **See Roopa live** in the app.
 
 ## Component API
 
@@ -40,7 +40,7 @@ import { RobotFace } from './robot-face'
 
 Available expressions: `happy`, `neutral`, `sad`, `wink`, `surprised`, `angry`, `sleepy`, `love`, `confused`, `excited`, `laughing`, `annoyed`, and `crying`.
 
-The reusable component lives in [`src/robot-face`](./src/robot-face); the remaining source files power the showcase app.
+The reusable `RobotFace` component lives in [`src/robot-face`](./src/robot-face); the remaining source files power the Roopa showcase app.
 
 ## Cloudflare Pages
 

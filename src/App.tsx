@@ -53,22 +53,22 @@ export default function App() {
   return (
     <div className="app-shell">
       <nav className="nav" aria-label="Primary navigation">
-        <a className="brand" href="#top" aria-label="RobotFace home">
+        <a className="brand" href="#top" aria-label="Roopa home">
           <span className="brand__mark">•ᴗ•</span>
-          <span>RobotFace</span>
+          <span>Roopa</span>
         </a>
         <div className="nav__status"><i /> Component online</div>
         <div className="nav__actions">
           <a className="nav__link" href="#expressions">Expressions <span>↘</span></a>
-          <a className="nav__display-link" href="/face" target="_blank" rel="noreferrer">Open display <span>↗</span></a>
+          <a className="nav__display-link" href="/face" target="_blank" rel="noreferrer">See Roopa live <span>↗</span></a>
         </div>
       </nav>
 
       <main id="top">
         <header className="hero-copy">
-          <div className="eyebrow"><span>01</span> Pixel personality for React</div>
+          <div className="eyebrow"><span>01</span> Roopa — a pixel robot face for React</div>
           <h1>Give your interface<br />a little <em>soul.</em></h1>
-          <p>A tiny, expressive CRT mascot built with React, SVG, and motion. Pick a mood, tune the behavior, and make it yours.</p>
+          <p>A tiny, expressive pixel robot face built with React, SVG, and motion. Pick a mood, tune the behavior, and make it yours.</p>
         </header>
 
         <section className="playground" aria-label="Robot face playground">
@@ -166,7 +166,7 @@ export default function App() {
       </main>
 
       <footer>
-        <a className="brand" href="#top"><span className="brand__mark">•ᴗ•</span><span>RobotFace</span></a>
+        <a className="brand" href="#top"><span className="brand__mark">•ᴗ•</span><span>Roopa</span></a>
         <p className="footer__made">Made with <span aria-label="love">♥</span> by <a href="https://github.com/yamustofa" target="_blank" rel="noreferrer">yamustofa</a></p>
         <div className="footer__links">
           <a href="https://www.threads.com/@mustavibe.dev" target="_blank" rel="noreferrer">Threads ↗</a>

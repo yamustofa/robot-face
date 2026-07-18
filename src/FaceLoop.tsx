@@ -31,7 +31,7 @@ export default function FaceLoop() {
   }
 
   return (
-    <main className="face-loop" aria-label="Animated RobotFace display" onPointerDown={enterFullscreen}>
+    <main className="face-loop" aria-label="Animated Roopa robot-face display" onPointerDown={enterFullscreen}>
       <RobotFace emotion={emotion} color="#c8ff6a" blinking interactive screenOnly />
     </main>
   )

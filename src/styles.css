@@ -32,7 +32,7 @@ body::before {
   pointer-events: none;
 }
 
-.app-shell { max-width: 1440px; margin: auto; padding: 0 4.5vw; }
+.app-shell { width: 100%; max-width: 1440px; margin: auto; padding: 0 4.5vw; overflow-x: clip; }
 
 .nav {
   display: grid;
@@ -92,15 +92,16 @@ legend { padding: 0 0 16px; color: #70766b; font: 500 9px/1 var(--mono); letter-
 .swatch { position: relative; width: 28px; height: 28px; border: 5px solid #1b1f19; border-radius: 50%; cursor: pointer; outline: 1px solid transparent; }
 .swatch.active { outline-color: currentColor; box-shadow: 0 0 10px currentColor; }
 
-.code-section { display: grid; grid-template-columns: 0.8fr 1.2fr; gap: 8vw; align-items: center; padding: clamp(100px, 13vw, 190px) 3vw; }
+.code-section { display: grid; grid-template-columns: 0.8fr 1.2fr; gap: 8vw; align-items: center; min-width: 0; padding: clamp(100px, 13vw, 190px) 3vw; }
+.code-section > * { min-width: 0; }
 h2 { font-size: clamp(2.8rem, 5vw, 5rem); }
 .code-section > div:first-child > p, .expressions__head > p { max-width: 470px; margin-top: 30px; color: var(--muted); font-size: 0.96rem; line-height: 1.7; }
-.code-card { overflow: hidden; border: 1px solid #363b32; border-radius: 7px; background: #0d100c; box-shadow: 0 28px 70px rgb(0 0 0 / 0.23); }
+.code-card { min-width: 0; overflow: hidden; border: 1px solid #363b32; border-radius: 7px; background: #0d100c; box-shadow: 0 28px 70px rgb(0 0 0 / 0.23); }
 .code-card__top { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding: 14px 17px; border-bottom: 1px solid #2a2e28; color: #656b61; font: 400 9px/1 var(--mono); }
 .code-card__top span:first-child { display: flex; gap: 6px; }
 .code-card__top i { width: 7px; height: 7px; border-radius: 50%; background: #3d423a; }
 .code-card__top button { justify-self: end; padding: 4px 7px; border: 0; color: #899080; background: none; cursor: pointer; font: inherit; }
-pre { min-height: 310px; margin: 0; padding: 34px; overflow-x: auto; color: #c5ccba; font: 400 clamp(0.75rem, 1.2vw, 0.95rem)/1.9 var(--mono); }
+pre { min-width: 0; min-height: 310px; margin: 0; padding: 34px; overflow-x: auto; color: #c5ccba; font: 400 clamp(0.75rem, 1.2vw, 0.95rem)/1.9 var(--mono); }
 pre code { color: var(--acid); }
 
 .expressions { padding: 10px 0 clamp(100px, 11vw, 170px); }
@@ -154,9 +155,12 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--acid); outline-
 @media (max-width: 560px) {
   .app-shell { padding: 0 14px; }
   .nav { height: 70px; }
+  .nav__link { display: none; }
   .nav__link { font-size: 9px; }
-  .nav__actions { gap: 14px; }
+  .nav__actions { gap: 0; }
   .nav__display-link { padding: 7px 8px; font-size: 8px; }
+  .hero-copy > p { margin-left: 0; }
+  h1 { font-size: clamp(2.7rem, 13vw, 3.6rem); }
   .footer__links { gap: 10px; }
   .hero-copy { padding-top: 72px; }
   .hero-copy > p { margin-top: 28px; }
