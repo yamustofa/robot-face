@@ -44,7 +44,7 @@ The reusable `RobotFace` component lives in [`src/robot-face`](./src/robot-face)
 
 ## Cloudflare Pages
 
-The project is ready for Cloudflare Pages. [`wrangler.jsonc`](./wrangler.jsonc) declares the `robot-face` project and the Vite output directory.
+The project is ready for Cloudflare Pages. [`wrangler.jsonc`](./wrangler.jsonc) declares the `roopa` project and the Vite output directory.
 
 For Git-based deployment, import `yamustofa/robot-face` in **Cloudflare Dashboard → Workers & Pages → Create application → Pages** and use:
 
@@ -54,7 +54,7 @@ For Git-based deployment, import `yamustofa/robot-face` in **Cloudflare Dashboar
 | Build command | `npm run build` |
 | Build output directory | `dist` |
 
-Cloudflare Pages will deploy `main` to production and create preview deployments for pull requests. The current expected production address is `https://robot-face.pages.dev`; update the canonical URL, sitemap, and social-image URLs if you use a custom domain.
+Cloudflare Pages will deploy `main` to production and create preview deployments for pull requests. The production address is `https://roopa.pages.dev`; update the canonical URL, sitemap, and social-image URLs if you use a custom domain.
 
 For a direct deploy after authenticating Wrangler:
 

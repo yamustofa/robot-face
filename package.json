@@ -8,8 +8,8 @@
     "build": "tsc -b && vite build",
     "typecheck": "tsc -b --pretty false",
     "preview": "vite preview",
-    "deploy": "npm run build && wrangler pages deploy dist --project-name robot-face",
-    "deploy:preview": "npm run build && wrangler pages deploy dist --project-name robot-face --branch preview"
+    "deploy": "npm run build && wrangler pages deploy dist --project-name roopa",
+    "deploy:preview": "npm run build && wrangler pages deploy dist --project-name roopa --branch preview"
   },
   "dependencies": {
     "framer-motion": "^12.23.24",
