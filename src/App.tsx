@@ -4,19 +4,19 @@ import { emotions, RobotFace, type Emotion } from './robot-face'
 const colors = ['#c8ff6a', '#62e8ff', '#ff8bc3', '#ffbb54']
 
 const emotionDetails: Record<Emotion, { glyph: string; note: string }> = {
-  happy: { glyph: '^ᴗ^', note: 'Default welcome' },
-  neutral: { glyph: '—_—', note: 'Standing by' },
-  sad: { glyph: '╥_╥', note: 'Something went wrong' },
-  wink: { glyph: '^‿—', note: 'Nice work' },
-  surprised: { glyph: '⊙o⊙', note: 'New discovery' },
-  angry: { glyph: '>_<', note: 'System alert' },
-  sleepy: { glyph: '–_–', note: 'Idle mode' },
-  love: { glyph: '♥_♥', note: 'Favorite' },
-  confused: { glyph: 'o_O', note: 'Needs context' },
-  excited: { glyph: '*_*', note: 'Big news' },
-  laughing: { glyph: '^ᴗ^', note: 'Pure delight' },
-  annoyed: { glyph: '¬_¬', note: 'Not impressed' },
-  crying: { glyph: 'T_T', note: 'Feeling blue' },
+  happy: { glyph: '⌒‿⌒', note: 'Default welcome' },
+  neutral: { glyph: '•—•', note: 'Standing by' },
+  sad: { glyph: '╲︵╱', note: 'Something went wrong' },
+  wink: { glyph: '•‿—', note: 'Nice work' },
+  surprised: { glyph: '○O○', note: 'New discovery' },
+  angry: { glyph: '>—<', note: 'System alert' },
+  sleepy: { glyph: '—·—', note: 'Idle mode' },
+  love: { glyph: '♥‿♥', note: 'Favorite' },
+  confused: { glyph: '•〰○', note: 'Needs context' },
+  excited: { glyph: '✦▽✦', note: 'Big news' },
+  laughing: { glyph: '⌒▽⌒', note: 'Pure delight' },
+  annoyed: { glyph: '⌐—¬', note: 'Not impressed' },
+  crying: { glyph: 'T︵T', note: 'Feeling blue' },
 }
 
 function Toggle({ checked, onChange, children }: { checked: boolean; onChange: () => void; children: string }) {
@@ -150,7 +150,7 @@ export default function App() {
               <div className="eyebrow"><span>03</span> Expression system</div>
               <h2>A mood for every moment.</h2>
             </div>
-            <p>Nine composable expressions, each built from crisp SVG paths and ready to animate.</p>
+            <p>Thirteen composable expressions, each built from crisp SVG paths and ready to animate.</p>
           </div>
           <div className="expression-cards">
             {emotions.map((item, index) => (

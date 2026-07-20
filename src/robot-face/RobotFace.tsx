@@ -18,29 +18,31 @@ type EyeSide = 'left' | 'right'
 function PixelEye({ glyph, side }: { glyph: EyeGlyph; side: EyeSide }) {
   switch (glyph) {
     case 'dot':
-      return <rect className="robot-face__fill" x={-4} y={-4} width="8" height="8" />
+      return <rect className="robot-face__fill" x={-5} y={-7} width="10" height="14" />
     case 'line':
-      return <path d="M-14 0h28" />
+      return <path d="M-13 0h26" />
     case 'arc':
-      return <path d="M-14 7V0h7v-7H7v7h7v7" />
+      return <path d="M-16 7V0h8v-8H8v8h8v7" />
     case 'sad':
       return side === 'left'
-        ? <path d="M-14 7h7V0h7v-7h14" />
-        : <path d="M-14 -7H0v7h7v7h7" />
+        ? <path d="M-15 -7h8v5h8v5h8v5h6" />
+        : <path d="M-15 8h6V3h8v-5h8v-5h8" />
     case 'angry':
       return side === 'left'
-        ? <path d="M-14 -7h7v7h7v7h14" />
-        : <path d="M-14 7H0V0h7v-7h7" />
+        ? <path d="M-15 8h6V3h8v-5h8v-5h8" />
+        : <path d="M-15 -7h8v5h8v5h8v5h6" />
     case 'round':
-      return <path d="M-7 -14H7v7h7V7H7v7H-7V7h-7V-7h7Z" />
+      return <path d="M-8 -13H8v5h5V8H8v5H-8V8h-5V-8h5Z" />
     case 'small-round':
-      return <rect x={-7} y={-7} width="14" height="14" />
+      return <rect className="robot-face__fill" x={-5} y={-5} width="10" height="10" />
     case 'heart':
-      return <path className="robot-face__fill" d="M-10 -12h8v4h4v-4h8v4h4v8h-4v4H6v4H2v4h-4V8h-4V4h-4V0h-4v-8h4Z" />
+      return <path className="robot-face__fill" d="M-15 -7h5v-5h8v5h4v-5h8v5h5V3h-5v5H5v5H0v5h-5v-5h-5V8h-5Z" />
     case 'star':
-      return <path className="robot-face__fill" d="M-4 -14h8v10h10v8H4v10h-8V4h-10v-8h10Z" />
+      return <path className="robot-face__fill" d="M-4 -16h8v8h8v4h4v8h-4v4H4v8h-8V8h-8V4h-4v-8h4v-4h8Z" />
     case 'annoyed':
-      return <path d="M-14 -3h28v8" />
+      return side === 'left'
+        ? <path d="M-15 6V-3h30" />
+        : <path d="M-15 -3h30v9" />
   }
 }
 
@@ -62,21 +64,21 @@ function EyePair({ eyes, blink }: { eyes: readonly [EyeGlyph, EyeGlyph]; blink: 
 function PixelMouth({ style }: { style: MouthStyle }) {
   switch (style) {
     case 'smile':
-      return <path d="M-22 -8v7h7v7h30v-7h7v-7" />
+      return <path d="M-24 -7v7h8v8h32V0h8v-7" />
     case 'line':
-      return <path d="M-15 0h30" />
+      return <path d="M-18 0h36" />
     case 'frown':
-      return <path d="M-22 8V1h7v-7h30v7h7v7" />
+      return <path d="M-24 9V2h8v-8h32v8h8v7" />
     case 'o':
-      return <path d="M-7 -12H7v5h7V7H7v5H-7V7h-7V-7h7Z" />
+      return <path d="M-8 -12H8v5h5V7H8v5H-8V7h-5V-7h5Z" />
     case 'small':
-      return <path d="M-7 0H7" />
+      return <path d="M-6 0H6" />
     case 'crooked':
-      return <path d="M-20 6h10V0H0v6h10V0h10" />
+      return <path d="M-22 6h11V0H0v6h11V0h11" />
     case 'laugh':
-      return <path d="M-22 -6h44v21h-7v7h-30v-7h-7Z" />
+      return <path d="M-24 -7h48v22h-8v8h-32v-8h-8Z" />
     case 'cry':
-      return <path d="M-22 22h44V1h-7v-7h-30v7h-7Z" />
+      return <path transform="translate(0 16) scale(1 -1)" d="M-24 -7h48v22h-8v8h-32v-8h-8Z" />
   }
 }
 
