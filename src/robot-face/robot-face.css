@@ -177,7 +177,7 @@
 .robot-face__screw--right { right: 7%; }
 
 .robot-face--glitch .robot-face__features {
-  animation: glitch 2.7s steps(1) infinite;
+  animation: glitch 700ms steps(1) 180ms 1 both;
 }
 
 .robot-face--screen-only {
@@ -217,9 +217,9 @@
 @keyframes drift { 50% { opacity: 0.45; transform: translate(5px, -8px); } }
 @keyframes tears { 50% { opacity: 0.35; transform: translateY(6px); } }
 @keyframes glitch {
-  0%, 91%, 94%, 100% { transform: translate(0); filter: drop-shadow(0 0 4px var(--face-color)); }
-  92% { transform: translate(-5px, 1px); filter: drop-shadow(8px 0 0 #ff4d6d); }
-  93% { transform: translate(5px, -1px); filter: drop-shadow(-8px 0 0 #59d9ff); }
+  0%, 34%, 47%, 100% { transform: translate(0); filter: drop-shadow(0 0 4px var(--face-color)); }
+  38% { transform: translate(-5px, 1px); filter: drop-shadow(8px 0 0 #ff4d6d); }
+  43% { transform: translate(5px, -1px); filter: drop-shadow(-8px 0 0 #59d9ff); }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -1,12 +1,12 @@
 import type { Emotion } from './types'
 
-export type EyeStyle = 'soft' | 'flat' | 'sad' | 'wink' | 'round' | 'angry' | 'sleepy' | 'heart' | 'confused' | 'excited'
-export type MouthStyle = 'smile' | 'flat' | 'frown' | 'open' | 'grit' | 'small' | 'wobble' | 'laugh'
+export type EyeStyle = 'soft' | 'flat' | 'sad' | 'wink' | 'round' | 'angry' | 'sleepy' | 'heart' | 'confused' | 'excited' | 'droopy' | 'unamused'
+export type MouthStyle = 'smile' | 'flat' | 'frown' | 'open' | 'grit' | 'small' | 'wobble' | 'laugh' | 'tremble'
 
 export const expressionConfig: Record<Emotion, { eyes: EyeStyle; mouth: MouthStyle }> = {
   happy: { eyes: 'soft', mouth: 'smile' },
   neutral: { eyes: 'flat', mouth: 'flat' },
-  sad: { eyes: 'sad', mouth: 'frown' },
+  sad: { eyes: 'droopy', mouth: 'frown' },
   wink: { eyes: 'wink', mouth: 'smile' },
   surprised: { eyes: 'round', mouth: 'open' },
   angry: { eyes: 'angry', mouth: 'grit' },
@@ -15,6 +15,6 @@ export const expressionConfig: Record<Emotion, { eyes: EyeStyle; mouth: MouthSty
   confused: { eyes: 'confused', mouth: 'wobble' },
   excited: { eyes: 'excited', mouth: 'smile' },
   laughing: { eyes: 'soft', mouth: 'laugh' },
-  annoyed: { eyes: 'angry', mouth: 'flat' },
-  crying: { eyes: 'sad', mouth: 'frown' },
+  annoyed: { eyes: 'unamused', mouth: 'flat' },
+  crying: { eyes: 'droopy', mouth: 'tremble' },
 }
