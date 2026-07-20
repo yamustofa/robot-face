@@ -16,8 +16,6 @@ export const emotions = [
 
 export type Emotion = (typeof emotions)[number]
 
-export type ExpressionTransitionPhase = 'idle' | 'closing' | 'opening'
-
 export type RobotFaceProps = {
   emotion?: Emotion
   color?: string
@@ -26,7 +24,6 @@ export type RobotFaceProps = {
   loading?: boolean
   interactive?: boolean
   screenOnly?: boolean
-  transitionPhase?: ExpressionTransitionPhase
   className?: string
   label?: string
 }

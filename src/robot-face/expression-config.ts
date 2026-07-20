@@ -1,20 +1,25 @@
 import type { Emotion } from './types'
 
-export type EyeStyle = 'soft' | 'flat' | 'sad' | 'wink' | 'round' | 'angry' | 'sleepy' | 'heart' | 'confused' | 'excited' | 'droopy' | 'unamused'
-export type MouthStyle = 'smile' | 'flat' | 'frown' | 'open' | 'grit' | 'small' | 'wobble' | 'laugh' | 'tremble'
+export type EyeGlyph = 'dot' | 'line' | 'arc' | 'sad' | 'angry' | 'round' | 'small-round' | 'heart' | 'star' | 'annoyed'
+export type MouthStyle = 'smile' | 'line' | 'frown' | 'o' | 'small' | 'crooked' | 'laugh' | 'cry'
 
-export const expressionConfig: Record<Emotion, { eyes: EyeStyle; mouth: MouthStyle }> = {
-  happy: { eyes: 'soft', mouth: 'smile' },
-  neutral: { eyes: 'flat', mouth: 'flat' },
-  sad: { eyes: 'droopy', mouth: 'frown' },
-  wink: { eyes: 'wink', mouth: 'smile' },
-  surprised: { eyes: 'round', mouth: 'open' },
-  angry: { eyes: 'angry', mouth: 'grit' },
-  sleepy: { eyes: 'sleepy', mouth: 'small' },
-  love: { eyes: 'heart', mouth: 'smile' },
-  confused: { eyes: 'confused', mouth: 'wobble' },
-  excited: { eyes: 'excited', mouth: 'smile' },
-  laughing: { eyes: 'soft', mouth: 'laugh' },
-  annoyed: { eyes: 'unamused', mouth: 'flat' },
-  crying: { eyes: 'droopy', mouth: 'tremble' },
+export type ExpressionConfig = {
+  eyes: readonly [EyeGlyph, EyeGlyph]
+  mouth: MouthStyle
+}
+
+export const expressionConfig: Record<Emotion, ExpressionConfig> = {
+  happy: { eyes: ['arc', 'arc'], mouth: 'smile' },
+  neutral: { eyes: ['dot', 'dot'], mouth: 'line' },
+  sad: { eyes: ['sad', 'sad'], mouth: 'frown' },
+  wink: { eyes: ['arc', 'line'], mouth: 'smile' },
+  surprised: { eyes: ['round', 'round'], mouth: 'o' },
+  angry: { eyes: ['angry', 'angry'], mouth: 'frown' },
+  sleepy: { eyes: ['line', 'line'], mouth: 'small' },
+  love: { eyes: ['heart', 'heart'], mouth: 'smile' },
+  confused: { eyes: ['small-round', 'round'], mouth: 'crooked' },
+  excited: { eyes: ['star', 'star'], mouth: 'laugh' },
+  laughing: { eyes: ['arc', 'arc'], mouth: 'laugh' },
+  annoyed: { eyes: ['annoyed', 'annoyed'], mouth: 'line' },
+  crying: { eyes: ['line', 'line'], mouth: 'cry' },
 }

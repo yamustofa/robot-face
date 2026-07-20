@@ -1,90 +1,98 @@
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { useEffect, useRef, useState, type CSSProperties, type PointerEvent } from 'react'
-import { expressionConfig, type EyeStyle, type MouthStyle } from './expression-config'
-import type { RobotFaceProps } from './types'
+import { expressionConfig, type EyeGlyph, type MouthStyle } from './expression-config'
+import type { Emotion, RobotFaceProps } from './types'
 import './robot-face.css'
 
-const eyeOffsetX: Partial<Record<EyeStyle, number>> = {
-  soft: -3,
-  wink: -3,
-  droopy: -1,
-  round: -5,
-  unamused: -1,
-  heart: -2,
-  confused: -4,
+const EYE_Y = 52
+const LEFT_EYE_X = 48
+const RIGHT_EYE_X = 112
+const MOUTH_X = 80
+const MOUTH_Y = 92
+const CLOSE_DURATION_MS = 90
+const OPEN_DURATION_MS = 150
+
+type TransitionPhase = 'idle' | 'closing' | 'opening'
+type EyeSide = 'left' | 'right'
+
+function PixelEye({ glyph, side }: { glyph: EyeGlyph; side: EyeSide }) {
+  switch (glyph) {
+    case 'dot':
+      return <rect className="robot-face__fill" x={-4} y={-4} width="8" height="8" />
+    case 'line':
+      return <path d="M-14 0h28" />
+    case 'arc':
+      return <path d="M-14 7V0h7v-7H7v7h7v7" />
+    case 'sad':
+      return side === 'left'
+        ? <path d="M-14 7h7V0h7v-7h14" />
+        : <path d="M-14 -7H0v7h7v7h7" />
+    case 'angry':
+      return side === 'left'
+        ? <path d="M-14 -7h7v7h7v7h14" />
+        : <path d="M-14 7H0V0h7v-7h7" />
+    case 'round':
+      return <path d="M-7 -14H7v7h7V7H7v7H-7V7h-7V-7h7Z" />
+    case 'small-round':
+      return <rect x={-7} y={-7} width="14" height="14" />
+    case 'heart':
+      return <path className="robot-face__fill" d="M-10 -12h8v4h4v-4h8v4h4v8h-4v4H6v4H2v4h-4V8h-4V4h-4V0h-4v-8h4Z" />
+    case 'star':
+      return <path className="robot-face__fill" d="M-4 -14h8v10h10v8H4v10h-8V4h-10v-8h10Z" />
+    case 'annoyed':
+      return <path d="M-14 -3h28v8" />
+  }
 }
 
-function EyePair({ style, blink }: { style: EyeStyle; blink: boolean }) {
-  if (blink) {
-    return <path d="M36 55h20 M104 55h20" />
-  }
+function EyePair({ eyes, blink }: { eyes: readonly [EyeGlyph, EyeGlyph]; blink: boolean }) {
+  const visibleEyes: readonly [EyeGlyph, EyeGlyph] = blink ? ['line', 'line'] : eyes
 
+  return (
+    <>
+      <g transform={`translate(${LEFT_EYE_X} ${EYE_Y})`}>
+        <PixelEye glyph={visibleEyes[0]} side="left" />
+      </g>
+      <g transform={`translate(${RIGHT_EYE_X} ${EYE_Y})`}>
+        <PixelEye glyph={visibleEyes[1]} side="right" />
+      </g>
+    </>
+  )
+}
+
+function PixelMouth({ style }: { style: MouthStyle }) {
   switch (style) {
-    case 'soft':
-      return <path d="M34 59v-7h7v-7h14v7h7v7 M104 59v-7h7v-7h14v7h7v7" />
-    case 'flat':
-      return <><rect x="40" y="42" width="8" height="22" /><rect x="112" y="42" width="8" height="22" /></>
-    case 'sad':
-      return <path d="M35 47h7v7h7v7h7 M104 61h7v-7h7v-7h7" />
-    case 'droopy':
-      return <path d="M34 61v-4h8v-4h8v-4h8 M104 49h8v4h8v4h8v4" />
-    case 'wink':
-      return <><path d="M34 59v-7h7v-7h14v7h7v7" /><path d="M104 55h28" /></>
-    case 'round':
-      return <><path className="robot-face__fill" d="M39 45h7v-5h7v5h6v16h-6v5h-7v-5h-7Zm72 0h7v-5h7v5h6v16h-6v5h-7v-5h-7Z" /><path d="M46 49h7v8h-7Zm72 0h7v8h-7Z" /></>
-    case 'angry':
-      return <path d="M34 45h8v4h7v5h8 M126 45h-8v4h-7v5h-8" />
-    case 'unamused':
-      return <path d="M34 52h24v8 M104 52h24v8" />
-    case 'sleepy':
-      return <path d="M35 52h7v5h7v-5h7 M104 52h7v5h7v-5h7" />
-    case 'heart':
-      return <path className="robot-face__fill" d="M35 40h10v5h5v-5h10v5h5v10h-5v5h-5v5h-5v5h-5v-5h-5v-5h-5v-5h-5V45h5Zm70 0h10v5h5v-5h10v5h5v10h-5v5h-5v5h-5v5h-5v-5h-5v-5h-5v-5h-5V45h5Z" />
-    case 'confused':
-      return <><rect x="40" y="45" width="16" height="16" /><rect x="108" y="39" width="24" height="24" /></>
-    case 'excited':
-      return <path className="robot-face__fill" d="M43 40h7v7h7v7h-7v7h-7v-7h-7v-7h7Zm68 0h7v7h7v7h-7v7h-7v-7h-7v-7h7Z" />
+    case 'smile':
+      return <path d="M-22 -8v7h7v7h30v-7h7v-7" />
+    case 'line':
+      return <path d="M-15 0h30" />
+    case 'frown':
+      return <path d="M-22 8V1h7v-7h30v7h7v7" />
+    case 'o':
+      return <path d="M-7 -12H7v5h7V7H7v5H-7V7h-7V-7h7Z" />
+    case 'small':
+      return <path d="M-7 0H7" />
+    case 'crooked':
+      return <path d="M-20 6h10V0H0v6h10V0h10" />
+    case 'laugh':
+      return <path d="M-22 -6h44v21h-7v7h-30v-7h-7Z" />
+    case 'cry':
+      return <path d="M-22 22h44V1h-7v-7h-30v7h-7Z" />
   }
 }
 
 function Mouth({ style, talking }: { style: MouthStyle; talking: boolean }) {
-  if (talking) {
-    return (
-      <rect
-        x="67"
-        y="88"
-        width="26"
-        height="8"
-        rx="4"
-        fill="none"
-        stroke="currentColor"
-      >
-        <animate attributeName="height" values="8;22;12;18;8" dur="750ms" repeatCount="indefinite" />
-        <animate attributeName="y" values="88;81;86;83;88" dur="750ms" repeatCount="indefinite" />
-      </rect>
-    )
-  }
-
-  switch (style) {
-    case 'smile':
-      return <path d="M58 84v8h7v7h30v-7h7v-8" />
-    case 'flat':
-      return <rect x="65" y="88" width="30" height="7" />
-    case 'frown':
-      return <path d="M58 102v-8h7v-7h30v7h7v8" />
-    case 'open':
-      return <path className="robot-face__fill" d="M68 85h6v-6h12v6h6v17h-6v6H74v-6h-6Zm7 1v15h10V86Z" />
-    case 'grit':
-      return <><rect x="61" y="83" width="38" height="19" /><path d="M74 83v19 M86 83v19 M61 92h38" /></>
-    case 'small':
-      return <rect x="73" y="88" width="14" height="7" />
-    case 'wobble':
-      return <path d="M61 94h9v-5h10v5h10v-5h9v5" />
-    case 'tremble':
-      return <path d="M58 114h44V93h-7v-7H65v7h-7Z" />
-    case 'laugh':
-      return <path d="M58 86h44v21h-7v7H65v-7h-7Z" />
-  }
+  return (
+    <g transform={`translate(${MOUTH_X} ${MOUTH_Y})`}>
+      {talking ? (
+        <rect x={-13} y={-4} width="26" height="8" rx="4" fill="none" stroke="currentColor">
+          <animate attributeName="height" values="8;22;12;18;8" dur="750ms" repeatCount="indefinite" />
+          <animate attributeName="y" values="-4;-11;-6;-9;-4" dur="750ms" repeatCount="indefinite" />
+        </rect>
+      ) : (
+        <PixelMouth style={style} />
+      )}
+    </g>
+  )
 }
 
 export function RobotFace({
@@ -95,26 +103,64 @@ export function RobotFace({
   loading = false,
   interactive = true,
   screenOnly = false,
-  transitionPhase = 'idle',
   className = '',
   label,
 }: RobotFaceProps) {
+  const reduceMotion = useReducedMotion()
+  const [displayedEmotion, setDisplayedEmotion] = useState<Emotion>(emotion)
+  const [transitionPhase, setTransitionPhase] = useState<TransitionPhase>('idle')
   const [isBlinking, setIsBlinking] = useState(false)
   const [gaze, setGaze] = useState({ x: 0, y: 0 })
-  const timer = useRef<number | undefined>(undefined)
+  const displayedEmotionRef = useRef<Emotion>(emotion)
+  const pendingEmotionRef = useRef<Emotion>(emotion)
+  const transitionTimer = useRef<number | undefined>(undefined)
+  const blinkTimer = useRef<number | undefined>(undefined)
   const blinkEndTimer = useRef<number | undefined>(undefined)
-  const reduceMotion = useReducedMotion()
-  const config = expressionConfig[emotion]
+  const config = expressionConfig[displayedEmotion]
 
   useEffect(() => {
-    window.clearTimeout(timer.current)
+    pendingEmotionRef.current = emotion
+
+    if (reduceMotion) {
+      window.clearTimeout(transitionTimer.current)
+      displayedEmotionRef.current = emotion
+      setDisplayedEmotion(emotion)
+      setTransitionPhase('idle')
+      return
+    }
+
+    if (emotion !== displayedEmotionRef.current) setTransitionPhase('closing')
+  }, [emotion, reduceMotion])
+
+  useEffect(() => {
+    window.clearTimeout(transitionTimer.current)
+    if (reduceMotion || transitionPhase === 'idle') return
+
+    transitionTimer.current = window.setTimeout(() => {
+      if (transitionPhase === 'closing') {
+        const nextEmotion = pendingEmotionRef.current
+        displayedEmotionRef.current = nextEmotion
+        setDisplayedEmotion(nextEmotion)
+        setTransitionPhase('opening')
+      } else if (pendingEmotionRef.current !== displayedEmotionRef.current) {
+        setTransitionPhase('closing')
+      } else {
+        setTransitionPhase('idle')
+      }
+    }, transitionPhase === 'closing' ? CLOSE_DURATION_MS : OPEN_DURATION_MS)
+
+    return () => window.clearTimeout(transitionTimer.current)
+  }, [reduceMotion, transitionPhase])
+
+  useEffect(() => {
+    window.clearTimeout(blinkTimer.current)
     window.clearTimeout(blinkEndTimer.current)
     setIsBlinking(false)
 
     if (!blinking || reduceMotion || transitionPhase !== 'idle') return
 
     const scheduleBlink = () => {
-      timer.current = window.setTimeout(() => {
+      blinkTimer.current = window.setTimeout(() => {
         setIsBlinking(true)
         blinkEndTimer.current = window.setTimeout(() => setIsBlinking(false), 130)
         scheduleBlink()
@@ -123,7 +169,7 @@ export function RobotFace({
 
     scheduleBlink()
     return () => {
-      window.clearTimeout(timer.current)
+      window.clearTimeout(blinkTimer.current)
       window.clearTimeout(blinkEndTimer.current)
     }
   }, [blinking, reduceMotion, transitionPhase])
@@ -146,14 +192,14 @@ export function RobotFace({
 
   return (
     <motion.div
-      className={`robot-face ${screenOnly ? 'robot-face--screen-only' : ''} ${emotion === 'angry' ? 'robot-face--glitch' : ''} ${className}`}
+      className={`robot-face ${screenOnly ? 'robot-face--screen-only' : ''} ${displayedEmotion === 'angry' ? 'robot-face--glitch' : ''} ${className}`}
       style={cssVars}
       onPointerMove={handlePointerMove}
       onPointerLeave={resetGaze}
       animate={reduceMotion || screenOnly ? undefined : { y: [0, -3, 0] }}
       transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}
       role="img"
-      aria-label={label ?? `${emotion} robot face${talking ? ', talking' : ''}`}
+      aria-label={label ?? `${displayedEmotion} robot face${talking ? ', talking' : ''}`}
     >
       <div className="robot-face__shell">
         <span className="robot-face__screw robot-face__screw--left" />
@@ -173,19 +219,17 @@ export function RobotFace({
             transition={{ type: 'spring', stiffness: 180, damping: 18 }}
             aria-hidden="true"
           >
-            <g transform={isBlinking ? undefined : `translate(${eyeOffsetX[config.eyes] ?? 0} 0)`}>
-              <motion.g
-                className="robot-face__eyes"
-                initial={false}
-                animate={reduceMotion ? undefined : { scaleY: transitionPhase === 'closing' ? 0.08 : 1 }}
-                transition={transitionPhase === 'closing'
-                  ? { duration: 0.09, ease: 'easeIn' }
-                  : { duration: 0.15, ease: 'easeOut' }}
-                style={{ transformBox: 'fill-box', transformOrigin: 'center' }}
-              >
-                <EyePair style={config.eyes} blink={isBlinking && transitionPhase === 'idle'} />
-              </motion.g>
-            </g>
+            <motion.g
+              className="robot-face__eyes"
+              initial={false}
+              animate={reduceMotion ? undefined : { scaleY: transitionPhase === 'closing' ? 0.08 : 1 }}
+              transition={transitionPhase === 'closing'
+                ? { duration: 0.09, ease: 'easeIn' }
+                : { duration: 0.15, ease: 'easeOut' }}
+              style={{ transformBox: 'fill-box', transformOrigin: 'center' }}
+            >
+              <EyePair eyes={config.eyes} blink={isBlinking && transitionPhase === 'idle'} />
+            </motion.g>
             <motion.g
               className="robot-face__mouth"
               initial={false}
@@ -201,7 +245,7 @@ export function RobotFace({
               <Mouth style={config.mouth} talking={talking && !reduceMotion} />
             </motion.g>
             <AnimatePresence initial={false}>
-              {emotion === 'crying' && (
+              {displayedEmotion === 'crying' && (
                 <motion.g
                   key="tears"
                   initial={{ opacity: 0 }}
@@ -209,13 +253,26 @@ export function RobotFace({
                   exit={{ opacity: 0, transition: { duration: 0.12, ease: 'easeIn' } }}
                   transition={{ duration: 0.15, ease: 'easeOut' }}
                 >
-                  <g className="robot-face__tears"><path d="M42 67v15" /><path d="M118 67v15" /></g>
+                  <g className="robot-face__tears"><path d="M48 52v28" /><path d="M112 52v28" /></g>
                 </motion.g>
               )}
             </AnimatePresence>
           </motion.svg>
           {loading && <div className="robot-face__loader" aria-hidden="true"><i /><i /><i /><i /></div>}
-          {emotion === 'sleepy' && <span className="robot-face__zzz">zZ</span>}
+          <AnimatePresence initial={false}>
+            {displayedEmotion === 'sleepy' && (
+              <motion.span
+                key="zzz"
+                className="robot-face__zzz"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0, transition: { duration: 0.12, ease: 'easeIn' } }}
+                transition={{ duration: 0.15, ease: 'easeOut' }}
+              >
+                zZ
+              </motion.span>
+            )}
+          </AnimatePresence>
           <div className="robot-face__scanlines" />
           <div className="robot-face__shine" />
         </div>
