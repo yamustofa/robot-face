@@ -9,43 +9,114 @@ const LEFT_EYE_X = 48
 const RIGHT_EYE_X = 112
 const MOUTH_X = 80
 const MOUTH_Y = 92
+const PIXEL_SIZE = 5
 const CLOSE_DURATION_MS = 90
 const OPEN_DURATION_MS = 150
 
 type TransitionPhase = 'idle' | 'closing' | 'opening'
 type EyeSide = 'left' | 'right'
+type PixelPattern = readonly string[]
 
-function PixelEye({ glyph, side }: { glyph: EyeGlyph; side: EyeSide }) {
-  switch (glyph) {
-    case 'dot':
-      return <rect className="robot-face__fill" x={-5} y={-7} width="10" height="14" />
-    case 'line':
-      return <path d="M-13 0h26" />
-    case 'arc':
-      return <path d="M-16 7V0h8v-8H8v8h8v7" />
-    case 'sad':
-      return side === 'left'
-        ? <path d="M-15 -7h8v5h8v5h8v5h6" />
-        : <path d="M-15 8h6V3h8v-5h8v-5h8" />
-    case 'angry':
-      return side === 'left'
-        ? <path d="M-15 8h6V3h8v-5h8v-5h8" />
-        : <path d="M-15 -7h8v5h8v5h8v5h6" />
-    case 'round':
-      return <path d="M-8 -13H8v5h5V8H8v5H-8V8h-5V-8h5Z" />
-    case 'small-round':
-      return <rect className="robot-face__fill" x={-5} y={-5} width="10" height="10" />
-    case 'heart':
-      return <path className="robot-face__fill" d="M-15 -7h5v-5h8v5h4v-5h8v5h5V3h-5v5H5v5H0v5h-5v-5h-5V8h-5Z" />
-    case 'star':
-      return <path className="robot-face__fill" d="M-4 -16h8v8h8v4h4v8h-4v4H4v8h-8V8h-8V4h-4v-8h4v-4h8Z" />
-    case 'annoyed':
-      return side === 'left'
-        ? <path d="M-15 6V-3h30" />
-        : <path d="M-15 -3h30v9" />
-  }
+const EYE_PATTERNS = {
+  dot: ['##', '##', '##'],
+  line: ['#####'],
+  arc: ['.###.', '#...#'],
+  sadLeft: ['#....', '.##..', '...##'],
+  sadRight: ['....#', '..##.', '##...'],
+  angryLeft: ['...##', '.##..', '#....'],
+  angryRight: ['##...', '..##.', '....#'],
+  round: ['.###.', '#...#', '#...#', '#...#', '.###.'],
+  smallRound: ['.##.', '#..#', '.##.'],
+  heart: ['.#.#.', '#####', '#####', '.###.', '..#..'],
+  star: ['..#..', '#.#.#', '.###.', '#####', '.###.', '#.#.#', '..#..'],
+  annoyedLeft: ['#####', '....#'],
+  annoyedRight: ['#####', '#....'],
+} satisfies Record<string, PixelPattern>
+
+const MOUTH_PATTERNS: Record<MouthStyle, PixelPattern> = {
+  smile: ['#.........#', '.#.......#.', '..#######..'],
+  line: ['#######'],
+  frown: ['..#######..', '.#.......#.', '#.........#'],
+  o: ['.###.', '#...#', '#...#', '#...#', '.###.'],
+  small: ['###'],
+  crooked: ['##.........', '..##.......', '....##.....', '......##...', '........###'],
+  laugh: ['.#######.', '#.......#', '#.......#', '.#.....#.', '..#####..'],
+  cry: ['..#######..', '.#.......#.', '#.........#'],
 }
 
+const SLEEP_ACCENT = [
+  '###...####',
+  '..#......#.',
+  '.#......#..',
+  '#......#...',
+  '###...####',
+] satisfies PixelPattern
+
+function PixelGlyph({ pattern, x = 0, y = 0, size = PIXEL_SIZE }: {
+  pattern: PixelPattern
+  x?: number
+  y?: number
+  size?: number
+}) {
+  const width = Math.max(...pattern.map((row) => row.length)) * size
+  const height = pattern.length * size
+
+  return (
+    <g transform={`translate(${x - width / 2} ${y - height / 2})`}>
+      {pattern.flatMap((row, rowIndex) => [...row].map((cell, columnIndex) => (
+        cell === '#'
+          ? <rect
+              className="robot-face__pixel"
+              key={`${rowIndex}-${columnIndex}`}
+              x={columnIndex * size}
+              y={rowIndex * size}
+              width={size}
+              height={size}
+            />
+          : null
+      )))}
+    </g>
+  )
+}
+
+function PixelEye({ glyph, side }: { glyph: EyeGlyph; side: EyeSide }) {
+  let pattern: PixelPattern
+
+  switch (glyph) {
+    case 'dot':
+      pattern = EYE_PATTERNS.dot
+      break
+    case 'line':
+      pattern = EYE_PATTERNS.line
+      break
+    case 'arc':
+      pattern = EYE_PATTERNS.arc
+      break
+    case 'sad':
+      pattern = side === 'left' ? EYE_PATTERNS.sadLeft : EYE_PATTERNS.sadRight
+      break
+    case 'angry':
+      pattern = side === 'left' ? EYE_PATTERNS.angryLeft : EYE_PATTERNS.angryRight
+      break
+    case 'round':
+      pattern = EYE_PATTERNS.round
+      break
+    case 'small-round':
+      pattern = EYE_PATTERNS.smallRound
+      break
+    case 'heart':
+      pattern = EYE_PATTERNS.heart
+      break
+    case 'star':
+      pattern = EYE_PATTERNS.star
+      break
+    case 'annoyed':
+      pattern = side === 'left' ? EYE_PATTERNS.annoyedLeft : EYE_PATTERNS.annoyedRight
+      break
+  }
+
+  return <PixelGlyph pattern={pattern} />
+}
 function EyePair({ eyes, blink }: { eyes: readonly [EyeGlyph, EyeGlyph]; blink: boolean }) {
   const visibleEyes: readonly [EyeGlyph, EyeGlyph] = blink ? ['line', 'line'] : eyes
 
@@ -62,34 +133,23 @@ function EyePair({ eyes, blink }: { eyes: readonly [EyeGlyph, EyeGlyph]; blink: 
 }
 
 function PixelMouth({ style }: { style: MouthStyle }) {
-  switch (style) {
-    case 'smile':
-      return <path d="M-24 -7v7h8v8h32V0h8v-7" />
-    case 'line':
-      return <path d="M-18 0h36" />
-    case 'frown':
-      return <path d="M-24 9V2h8v-8h32v8h8v7" />
-    case 'o':
-      return <path d="M-8 -12H8v5h5V7H8v5H-8V7h-5V-7h5Z" />
-    case 'small':
-      return <path d="M-6 0H6" />
-    case 'crooked':
-      return <path d="M-22 6h11V0H0v6h11V0h11" />
-    case 'laugh':
-      return <path d="M-24 -7h48v22h-8v8h-32v-8h-8Z" />
-    case 'cry':
-      return <path transform="translate(0 16) scale(1 -1)" d="M-24 -7h48v22h-8v8h-32v-8h-8Z" />
-  }
+  return <PixelGlyph pattern={MOUTH_PATTERNS[style]} />
 }
-
 function Mouth({ style, talking }: { style: MouthStyle; talking: boolean }) {
   return (
     <g transform={`translate(${MOUTH_X} ${MOUTH_Y})`}>
       {talking ? (
-        <rect x={-13} y={-4} width="26" height="8" rx="4" fill="none" stroke="currentColor">
-          <animate attributeName="height" values="8;22;12;18;8" dur="750ms" repeatCount="indefinite" />
-          <animate attributeName="y" values="-4;-11;-6;-9;-4" dur="750ms" repeatCount="indefinite" />
-        </rect>
+        <g>
+          <PixelGlyph pattern={MOUTH_PATTERNS.o} />
+          <animateTransform
+            attributeName="transform"
+            type="scale"
+            values="1 0.55;1 1;1 0.7;1 1;1 0.55"
+            dur="750ms"
+            calcMode="discrete"
+            repeatCount="indefinite"
+          />
+        </g>
       ) : (
         <PixelMouth style={style} />
       )}
@@ -211,11 +271,7 @@ export function RobotFace({
           <motion.svg
             className="robot-face__features"
             viewBox="0 0 160 130"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="7"
-            strokeLinecap="square"
-            strokeLinejoin="miter"
+            fill="currentColor"
             shapeRendering="crispEdges"
             animate={{ x: gaze.x, y: gaze.y }}
             transition={{ type: 'spring', stiffness: 180, damping: 18 }}
@@ -255,26 +311,27 @@ export function RobotFace({
                   exit={{ opacity: 0, transition: { duration: 0.12, ease: 'easeIn' } }}
                   transition={{ duration: 0.15, ease: 'easeOut' }}
                 >
-                  <g className="robot-face__tears"><path d="M48 52v28" /><path d="M112 52v28" /></g>
+                  <g className="robot-face__tears">
+                    <PixelGlyph pattern={['##', '##', '##', '##']} x={48} y={75} />
+                    <PixelGlyph pattern={['##', '##', '##', '##']} x={112} y={75} />
+                  </g>
+                </motion.g>
+              )}
+              {displayedEmotion === 'sleepy' && (
+                <motion.g
+                  key="zzz"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0, transition: { duration: 0.12, ease: 'easeIn' } }}
+                  transition={{ duration: 0.15, ease: 'easeOut' }}
+                >
+                  <PixelGlyph pattern={SLEEP_ACCENT} x={133} y={27} size={3} />
                 </motion.g>
               )}
             </AnimatePresence>
           </motion.svg>
           {loading && <div className="robot-face__loader" aria-hidden="true"><i /><i /><i /><i /></div>}
-          <AnimatePresence initial={false}>
-            {displayedEmotion === 'sleepy' && (
-              <motion.span
-                key="zzz"
-                className="robot-face__zzz"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0, transition: { duration: 0.12, ease: 'easeIn' } }}
-                transition={{ duration: 0.15, ease: 'easeOut' }}
-              >
-                zZ
-              </motion.span>
-            )}
-          </AnimatePresence>
+
           <div className="robot-face__scanlines" />
           <div className="robot-face__shine" />
         </div>
